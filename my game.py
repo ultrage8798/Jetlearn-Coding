@@ -1,64 +1,65 @@
-import pygame
-from time import *
-from pygame.locals import *
+import pygame 
 
 pygame.init()
 
-screen=pygame.display.set_mode((600,600))
+WIDTH=700
+HEIGHT=500
 
-player=pygame.image.load("rocket.png")
-bg=pygame.image.load("roadbg.png")
+screen=pygame.display.set_mode([WIDTH,HEIGHT])
 
-player_rect=player.get_rect()
-player_x,player_y=player_rect.topleft
+class Player(pygame.sprite.Sprite):
+    def __init__(self):
+        super().__init__()
+        self.image=pygame.image.load("dog.png")
+        self.image=pygame.transform.scale(self.image,(70,100))
+        self.rect=self.image.get_rect()
 
-keys=[False, False, False, False]
-running=True
-while running:
-    for event in pygame.event.get():
-        if event.type==QUIT:
-            running=False
-        if event.type==pygame.KEYDOWN:
-            if event.key==K_UP:
-                keys[0]=True
-            elif event.key==K_DOWN:
-                keys[1]=True
-            elif event.key==K_LEFT:
-                keys[2]=True
-            elif event.key==K_RIGHT:
-                keys[3]=True
-        if event.type==pygame.KEYUP:
-            if event.key==K_UP:
-                keys[0]=False
-            elif event.key==K_DOWN:
-                keys[1]=False
-            elif event.key==K_LEFT:
-                keys[2]=False
-            elif event.key==K_RIGHT:
-                keys[3]=False
+    def update(self,pressed_keys):
+        if pressed_keys[pygame.K_UP]:
+            self.rect.move_ip(0,-5)
+        if pressed_keys[pygame.K_DOWN]:
+            self.rect.move_ip(0,5)
+        if pressed_keys[pygame.K_RIGHT]:
+            self.rect.move_ip(5,0)
+        if pressed_keys[pygame.K_LEFT]:
+            self.rect.move_ip(-5,0)
 
-    if keys[0]:
-        if player_y>0:
-            player_y-=7
-    elif keys[1]:
-        if player_y<536:
-            player_y+=7
-    elif keys[2]:
-        if player_x>0:
-             player_x-=7
-    elif keys[3]:
-        if player_x<536:
-            player_x+=7
-    
-    player_rect.topleft=(player_x,player_y)
+        if self.rect.left<=0:
+            self.rect.left=0
+        elif self.rect.right>=WIDTH:
+            self.rect.right=WIDTH
+        if self .rect.top<=0:
+            self.rect.top=0
+        elif self.rect.bottom>=HEIGHT:
+            self.rect.bottom=HEIGHT
 
-    screen.fill((0,0,0))
+sprites=pygame.sprite.Group()
 
-    screen.blit(bg,(0,0))
-    screen.blit(player,player_rect)
+class Treat(pygame.sprite.Sprite):
+    def __init__ (self):
+        super().__init__()
+        self.image=pygame.image.load("dogbone.png")
+        self.image=pygame.transform.scale(self.image,(35,50))
+        self.rect=self.image.get_rect()
 
-    pygame.display.flip()
-    pygame.time.Clock().tick(60)
+        if self.rect.left<=0:
+            self.rect.left=0
+        elif self.rect.right>=WIDTH:
+            self.rect.right=WIDTH
+        if self .rect.top<=0:
+            self.rect.top=0
+        elif self.rect.bottom>=HEIGHT:
+            self.rect.bottom=HEIGHT
 
-pygame.quit()
-print("Game Over")
+sprites=pygame.sprite.Group()
+
+def start_game():
+    player=Player()
+    sprites.add(player)
+    treat=Treat()
+    sprites.add(treat)
+
+for event in pygame.event.get():
+    if event.type==pygame.QUIT:
+        pygame.quit()
+        exit(0)
